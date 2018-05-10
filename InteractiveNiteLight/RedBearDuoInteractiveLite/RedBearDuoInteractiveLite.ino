@@ -98,15 +98,12 @@ int bleWriteCallback(uint16_t value_handle, uint8_t *buffer, uint16_t size) {
      */
     if(receive_data[0] == 0x05) { // Command is to control PWM RED pin
       redValue = receive_data[1];
-      //analogWrite(PWM_R_PIN, 255-receive_data[1]);
     }
     else if(receive_data[0] == 0x06) { // Command is to control PWM GREEN pin
       greenValue = receive_data[1];
-      //analogWrite(PWM_G_PIN, 255-receive_data[1]);
     }
     else if(receive_data[0] == 0x07) { // Command is to control PWM BLUE pin
       blueValue = receive_data[1];
-      //analogWrite(PWM_B_PIN, 255-receive_data[1]);
     }
     else if (receive_data[0] == 0x04) { // Command is to initialize all.
       analogWrite(PWM_R_PIN, 255);
@@ -166,11 +163,6 @@ void loop() {
   int ledBrightnessVal = map(photocellVal, MIN_PHOTOCELL_VAL, MAX_PHOTOCELL_VAL, 1, 10);
 
   ledBrightnessVal = constrain(ledBrightnessVal, 1, 10);
-  //ledVal = 10 - ledVal;
-  //Serial.print("photocell val ");
-  //Serial.print(photocellVal);
-  //Serial.print(" , ");
-  //Serial.println(ledVal);
   
   if(priorSliderValue != threeBitVal){
     priorSliderValue = threeBitVal;
@@ -207,12 +199,5 @@ void setColor(int red, int green, int blue, int brightness)
   analogWrite(PWM_R_PIN, red);
   analogWrite(PWM_G_PIN, green);
   analogWrite(PWM_B_PIN, blue); 
-   
-  Serial.print(255-red);
-  Serial.print(",");
-  Serial.print(255-green);
-  Serial.print(",");
-  Serial.print(255-blue);
-  Serial.print(" : ");
-  Serial.println(brightness);
+  
 }
