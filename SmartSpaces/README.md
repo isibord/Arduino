@@ -14,6 +14,13 @@ Lo-fi enclosure: A Lo-fi enclosure made with a cardboard box, holds the servo an
 
 ![Fig3](https://github.com/isibord/Arduino/blob/master/Pictures/smartspace-setup.jpg)
 
-Creative Component: My creative component is an accessibility feature that vocally describes the face that has been detected. It will say something like: “ I see a female of about age 31, wearing reading glasses and about 200 centimeters away”.
+3D enclosure: I later 3D-printed a stand for the servo motor to sit on a flat surface and a motor attachment for the ultrasonic sensor to sit on the servo propeller. 
+
+![Fig4](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-3dprint.jpg)
+
+Creative Component 1: My creative component is an accessibility feature that vocally describes the face that has been detected. It will say something like: “ I see a female of about age 31, wearing reading glasses and about 200 centimeters away”.
+
+Creative Component 2: My second creative component (I call the snapchat effect :) ) used the android smiling probability + graphics overlay + face landmarks + to show the detected state of the user's emotion via a smiley with 2 emotional states happy and sad.
+![Fig5](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-emotion.jpg)
 
 Addendum: Microsoft cognitive service API (https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236) requires a subscription key. You need to update <Subscription Key> in code and the region in url as well.

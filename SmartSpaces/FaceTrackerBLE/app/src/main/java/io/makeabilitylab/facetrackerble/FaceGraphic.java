@@ -18,6 +18,10 @@ package io.makeabilitylab.facetrackerble;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PointF;
+import android.content.Context;
 
 import com.google.android.gms.vision.face.Face;
 import io.makeabilitylab.facetrackerble.camera.GraphicOverlay;
@@ -47,12 +51,16 @@ class FaceGraphic extends GraphicOverlay.Graphic {
     private Paint mFacePositionPaint;
     private Paint mIdPaint;
     private Paint mBoxPaint;
+    private PointF mLeftPosition;
+    private PointF mRightPosition;
+    private Bitmap happy;
+    private Bitmap sad;
 
     private volatile Face mFace;
     private int mFaceId;
     private float mFaceHappiness;
 
-    FaceGraphic(GraphicOverlay overlay) {
+    FaceGraphic(GraphicOverlay overlay, Context context) {
         super(overlay);
 
         mCurrentColorIndex = (mCurrentColorIndex + 1) % COLOR_CHOICES.length;
@@ -69,6 +77,11 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         mBoxPaint.setColor(selectedColor);
         mBoxPaint.setStyle(Paint.Style.STROKE);
         mBoxPaint.setStrokeWidth(BOX_STROKE_WIDTH);
+
+        sad = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.sad);
+        happy = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.subtlesmiley);
     }
 
     void setId(int id) {
@@ -100,9 +113,20 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float y = translateY(face.getPosition().y + face.getHeight() / 2);
         canvas.drawCircle(x, y, FACE_POSITION_RADIUS, mFacePositionPaint);
         canvas.drawText("id: " + mFaceId, x + ID_X_OFFSET, y + ID_Y_OFFSET, mIdPaint);
-        //canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
+
+        float happiness = face.getIsSmilingProbability();
+
+        if(mLeftPosition != null && mRightPosition != null) {
+            if (happiness > 0.75) {
+                canvas.drawBitmap(happy, mLeftPosition.x + 80.0f , mLeftPosition.y + 350.0f, null);
+            } else {
+                canvas.drawBitmap(sad, mLeftPosition.x + 80.0f , mLeftPosition.y + 350.0f, null);
+            }
+        }
+
+        canvas.drawText("happiness: " + String.format("%.2f", face.getIsSmilingProbability()), x - ID_X_OFFSET, y - ID_Y_OFFSET, mIdPaint);
         //canvas.drawText("right eye: " + String.format("%.2f", face.getIsRightEyeOpenProbability()), x + ID_X_OFFSET * 2, y + ID_Y_OFFSET * 2, mIdPaint);
-        //canvas.drawText("left eye: " + String.format("%.2f", face.getIsLeftEyeOpenProbability()), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);
+        //canvas.drawText("left mouth: " + String.format("%.2f", mLeftPosition.x), x - ID_X_OFFSET*2, y - ID_Y_OFFSET*2, mIdPaint);
 
         // Draws a bounding box around the face.
         float xOffset = scaleX(face.getWidth() / 2.0f);
@@ -112,5 +136,16 @@ class FaceGraphic extends GraphicOverlay.Graphic {
         float right = x + xOffset;
         float bottom = y + yOffset;
         canvas.drawRect(left, top, right, bottom, mBoxPaint);
+    }
+
+    /**
+     * Updates the mouth positions and state from the detection of the most recent frame.  Invalidates
+     * the relevant portions of the overlay to trigger a redraw.
+     */
+    void updateMouth(PointF leftPosition, PointF rightPosition) {
+        mLeftPosition = leftPosition;
+        mRightPosition = rightPosition;
+
+        postInvalidate();
     }
 }

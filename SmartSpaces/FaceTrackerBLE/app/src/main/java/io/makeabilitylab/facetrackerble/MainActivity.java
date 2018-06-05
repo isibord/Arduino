@@ -23,6 +23,7 @@ import android.widget.Toast;
 import android.os.AsyncTask;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeech.OnInitListener;
+import android.graphics.PointF;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -30,6 +31,7 @@ import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.MultiProcessor;
 import com.google.android.gms.vision.Tracker;
 import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.Landmark;
 import com.google.android.gms.vision.face.FaceDetector;
 import com.google.android.gms.vision.face.LargestFaceFocusingProcessor;
 
@@ -439,12 +441,10 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
     private CameraSource.PictureCallback mPicture = new CameraSource.PictureCallback() {
         @Override
         public void onPictureTaken(byte[] bytes) {
-            //Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
             new MyAsyncTask().execute(bytes);
         }
 
     };
-
 
     // The types specified here are the input data type, the progress type, and the result type
     private class MyAsyncTask extends AsyncTask<byte[], String, String> {
@@ -459,13 +459,14 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
 
             // NOTE: You must use the same region in your REST call as you used to
             // obtain your subscription keys. For example, if you obtained your
-            // subscription keys from westus, replace "westcentralus" in the URL
-            // below with "westus".
+            // subscription keys from westcentralus, replace "westus2" in the URL
+            // below with "westcentralus".
             //
             // Free trial subscription keys are generated in the westcentralus region. If you
             // use a free trial subscription key, you shouldn't need to change this region.
             // USING: https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236
-            String uriBase = "https://westcentralus.api.cognitive.microsoft.com/face/v1.0/detect";
+            //https://westus2.api.cognitive.microsoft.com/face/v1.0
+            String uriBase = "https://westus2.api.cognitive.microsoft.com/face/v1.0/detect";
 
             String faceAttributes = "age,gender,facialHair,glasses,emotion,makeup,accessories";
 
@@ -562,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
 
         FaceTracker(GraphicOverlay overlay) {
             mOverlay = overlay;
-            mFaceGraphic = new FaceGraphic(overlay);
+            mFaceGraphic = new FaceGraphic(overlay, getApplicationContext());
         }
 
         /**
@@ -573,11 +574,7 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
 
             mFaceGraphic.setId(faceId);
             if (mCameraSource != null) {
-                //MuteAudio();
-                //lastImageTakenTime = System.currentTimeMillis();
                 mCameraSource.takePicture(null, mPicture);
-                //UnMuteAudio();
-
             }
         }
 
@@ -649,6 +646,14 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
 
             // Send the data!
             mBLEDevice.sendData(buf);
+
+            PointF leftPosition = getLandmarkPosition(face, Landmark.LEFT_MOUTH);
+            PointF rightPosition = getLandmarkPosition(face, Landmark.RIGHT_MOUTH);
+
+            if(leftPosition != null && rightPosition != null) {
+                mFaceGraphic.updateMouth(leftPosition, rightPosition);
+            }
+
         }
 
         /**
@@ -668,6 +673,15 @@ public class MainActivity extends AppCompatActivity implements BLEListener, OnIn
         @Override
         public void onDone() {
             mOverlay.remove(mFaceGraphic);
+        }
+
+        private PointF getLandmarkPosition(Face face, int landmarkId) {
+            for (Landmark landmark : face.getLandmarks()) {
+                if (landmark.getType() == landmarkId) {
+                    return landmark.getPosition();
+                }
+            }
+            return null;
         }
     }
 
