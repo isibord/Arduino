@@ -42,9 +42,16 @@ Lo-fi enclosure: A Lo-fi enclosure made with a cardboard box, holds the servo an
 
 ![Fig4](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-3dprint.jpg)
 
+
+![Fig5](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-setup.jpg)
+
 Creative Component 1: My creative component is an accessibility feature that vocally describes the face that has been detected. It will say something like: “ I see a female of about age 31, wearing reading glasses and about 200 centimeters away”.
 
-Creative Component 2: My second creative component (I call the snapchat effect ??) used the android smiling probability + graphics overlay + face landmarks + to show the detected state of the user's emotion via a smiley with 2 emotional states happy and sad.
-![Fig5](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-emotion.jpg)
+Creative Component 2: My second creative component (I call the snapchat effect :) ) used the android smiling probability + graphics overlay + face landmarks to show the detected state of the user's emotion via a smiley with 2 emotional states happy and sad.
+![Fig6](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-emotion.png)
+
+Update Demo with Fabrication:
+
+[![SmartSpaces Demo](https://github.com/isibord/Arduino/blob/master/Pictures/fabrication-screenshot.jpg)](https://www.youtube.com/watch?v=xWQ1CzxLh7s&feature=youtu.be "SmartSpaces with Fabrication Demo")
 
 Addendum: Microsoft cognitive service API (https://westus.dev.cognitive.microsoft.com/docs/services/563879b61984550e40cbbe8d/operations/563879b61984550f30395236) requires a subscription key. You need to update <Subscription Key> in code and the region in url as well.
